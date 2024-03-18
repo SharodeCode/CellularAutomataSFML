@@ -19,7 +19,7 @@ void CellBoard::initializeGrid() {
 }
 
 // Function to count the living neighbors of a cell
-int CellBoard::countLivingNeighbors(const std::vector<std::vector<int>>& grid, int x, int y) {
+int CellBoard::countLivingNeighbors(int x, int y) {
     int count = 0;
 
     for (int i = -1; i <= 1; ++i) {
@@ -44,7 +44,7 @@ void CellBoard::updateGrid() {
     for (int i = 0; i < ROWS; ++i) {
         for (int j = 0; j < COLUMNS; ++j) {
 
-            int livingNeighbors = countLivingNeighbors(grid, j, i);
+            int livingNeighbors = countLivingNeighbors(j, i);
 
             if (grid[i][j] == 1 && (livingNeighbors < 2 || livingNeighbors > 3)) {
                 newGrid[i][j] = 0; // Die

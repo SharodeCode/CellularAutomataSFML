@@ -48,12 +48,21 @@ int main() {
     CellBoard cellBoard(ROWS, COLUMNS, CELL_SIZE);
 
     sf::Clock clock;
-    const sf::Time updateInterval = sf::seconds(0.1f); // Update the simulation every 0.1 seconds
+    sf::Clock fpsClock;
+    float updateInterval = 0.5f; // Update the simulation every 0.1 seconds
     bool paused = false;
+    float accumulator = 0.0f;
+
+
 
     UI ui = UI(&window);
 
     while (window.isOpen()) {
+        sf::Time elapsed = fpsClock.restart();
+        float deltaTime = elapsed.asSeconds();
+
+        accumulator += deltaTime;
+
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -63,19 +72,28 @@ int main() {
                 if (event.key.code == sf::Keyboard::P) {
                     paused = !paused; // Toggle pause state
                 }
+
+                if (event.key.code == sf::Keyboard::Up) {
+                    updateInterval -= 0.1; // Speed up simulation
+                }
+
+                if (event.key.code == sf::Keyboard::Down) {
+                    updateInterval += 0.1; // Slow down simulation
+                }
+
             }
         }
 
-        if (!paused && clock.getElapsedTime() >= updateInterval) {
+        if (!paused && accumulator >= updateInterval) {
+            accumulator = 0.0f;
             cellBoard.updateGrid();
             clock.restart();
         }
 
         window.clear();
 
-        // Optionally, call your drawGrid function here to draw the grid if you implemented it
-
         cellBoard.drawGrid(&window);
+        ui.updateUI(deltaTime);
 
         window.display();
     }

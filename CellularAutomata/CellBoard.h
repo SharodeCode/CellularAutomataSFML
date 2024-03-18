@@ -8,7 +8,7 @@ public:
 	CellBoard(int ROWS, int COLUMNS, int CELLL_SIZE);
 
 	void initializeGrid();
-	int countLivingNeighbors(const std::vector<std::vector<int>>& grid, int x, int y);
+	int countLivingNeighbors(int x, int y);
 	void updateGrid();
 	void drawGrid(sf::RenderWindow* RenderWindow);
 
