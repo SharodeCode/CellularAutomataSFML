@@ -7,6 +7,24 @@ CellBoard::CellBoard(int ROWS, int COLUMNS, int CELL_SIZE) : ROWS(ROWS), COLUMNS
 
 // Function to initialize the grid with random cells
 void CellBoard::initializeGrid() {
+
+    blankGrid();
+
+}
+
+void CellBoard::blankGrid() {
+    for (int i = 0; i < ROWS; ++i) {
+        std::vector<int> row(COLUMNS, 0);
+
+        for (int j = 0; j < COLUMNS; ++j) {
+            row[j] = 0; // Set all grid spaces to 0
+        }
+
+        grid.push_back(row);
+    }
+}
+
+void CellBoard::randomGrid(){
     for (int i = 0; i < ROWS; ++i) {
         std::vector<int> row(COLUMNS, 0);
 
@@ -57,6 +75,18 @@ void CellBoard::updateGrid() {
     }
 
     grid = newGrid; // Update the original grid
+}
+
+void CellBoard::interactWithBoard(const sf::Vector2f& position) {
+    int cellX = position.x / CELL_SIZE;
+    int cellY = position.y / CELL_SIZE;
+
+    if (grid[cellY][cellX] == 1) {
+        grid[cellY][cellX] = 0;
+    }
+    else {
+        grid[cellY][cellX] = 1;
+    }
 }
 
 void CellBoard::drawGrid(sf::RenderWindow* RenderWindow) {
