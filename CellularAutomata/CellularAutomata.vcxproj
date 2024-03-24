@@ -144,11 +144,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CellBoard.cpp" />
+    <ClCompile Include="GameController\Controller.cpp" />
+    <ClCompile Include="InputManager\InputManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RenderingSystem\RenderableComponent.cpp" />
+    <ClCompile Include="RenderingSystem\RenderingSystem.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellBoard.h" />
+    <ClInclude Include="GameController\Controller.h" />
+    <ClInclude Include="InputManager\InputManager.h" />
+    <ClInclude Include="RenderingSystem\RenderableComponent.h" />
+    <ClInclude Include="RenderingSystem\RenderingSystem.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>

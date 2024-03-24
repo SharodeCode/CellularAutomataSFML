@@ -2,6 +2,9 @@
 #include <vector>
 #include "UI.h"
 #include "CellBoard.h"
+#include "GameController/Controller.h"
+#include "InputManager/InputManager.h"
+#include "RenderingSystem/RenderingSystem.h"
 
 // Define the size of the window and cells
 const int WINDOW_WIDTH = 900;
@@ -47,102 +50,25 @@ int main() {
 
     CellBoard cellBoard(ROWS, COLUMNS, CELL_SIZE);
 
-    sf::Clock clock;
     sf::Clock fpsClock;
-    float updateInterval = 0.5f; // Update the simulation every 0.1 seconds
-    bool paused = false;
-    float accumulator = 0.0f;
 
-    UI ui = UI(&window);
-
-    int clickCellX = -1;
-    int clickCellY = -1;
-
-    // Variables to keep track of mouse state
-    bool mouseButtonDown = false;
-    sf::Vector2f lastMousePosition;
+    UI ui(&window);
+    Controller controller(cellBoard, ui);
+    InputManager inputManager(window, controller);
+    RenderingSystem renderingSystem(window);
 
     while (window.isOpen()) {
         sf::Time elapsed = fpsClock.restart();
         float deltaTime = elapsed.asSeconds();
 
-        accumulator += deltaTime;
-
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::P) {
-                    paused = !paused; // Toggle pause state
-                }
-
-                if (event.key.code == sf::Keyboard::Up) {
-                    updateInterval -= 0.02; // Speed up simulation
-                }
-
-                if (event.key.code == sf::Keyboard::Down) {
-                    updateInterval += 0.02; // Slow down simulation
-                }
-            }
-
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f mousePosition(event.mouseButton.x, event.mouseButton.y);
-                cellBoard.interactWithBoard(mousePosition);
-
-                // Calculate the cell coordinates
-                int cellX = mousePosition.x / CELL_SIZE;
-                int cellY = mousePosition.y / CELL_SIZE;
-
-                
-
-                ui.displayMessage(std::to_string(cellX));
-            }
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                mouseButtonDown = true;
-                lastMousePosition = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
-            }
-
-            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-                mouseButtonDown = false;
-            }
-        }
-
-        if (mouseButtonDown) {
-            // Get current mouse position
-            sf::Vector2f currentMousePosition = sf::Vector2f(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-
-            // Send new coordinates if the mouse position has changed
-            if (currentMousePosition != lastMousePosition) {
-
-                int CELLX = currentMousePosition.x / CELL_SIZE;
-                int CELLY = currentMousePosition.y / CELL_SIZE;
-
-                if (!(CELLX == clickCellX && clickCellY == CELLY)) {
-                    cellBoard.interactWithBoard(currentMousePosition);
-
-                    clickCellX = currentMousePosition.x / CELL_SIZE;
-                    clickCellY = currentMousePosition.y / CELL_SIZE;
-
-                    ui.displayMessage(std::to_string(clickCellX));
-
-                    // Update last mouse position
-                    lastMousePosition = currentMousePosition;
-                }
-            }
-        }
-
-        if (!paused && accumulator >= updateInterval) {
-            accumulator = 0.0f;
-            cellBoard.updateGrid();
-            clock.restart();
-        }
+        inputManager.processEvents();
+        controller.update(deltaTime);
 
         window.clear();
 
         cellBoard.drawGrid(&window);
-        ui.updateUI(deltaTime);
+
+        //renderingSystem.render();
 
         window.display();
     }

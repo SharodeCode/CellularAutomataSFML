@@ -7,9 +7,7 @@ CellBoard::CellBoard(int ROWS, int COLUMNS, int CELL_SIZE) : ROWS(ROWS), COLUMNS
 
 // Function to initialize the grid with random cells
 void CellBoard::initializeGrid() {
-
-    blankGrid();
-
+    randomGrid();
 }
 
 void CellBoard::blankGrid() {
